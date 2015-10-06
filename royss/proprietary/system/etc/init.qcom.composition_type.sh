@@ -37,19 +37,15 @@ case $soc_id in
         buildid=`cat /sys/devices/system/soc/soc0/build_id`
         offset_1=0
         offset_2=6
-        offset_3=4
         length=1
         is_unicorn=7
         dsp_lpa_enabled=2
         modemid_1=${buildid:$offset_1:$length}
         modemid_2=${buildid:$offset_2:$length}
-        modemid_3=${buildid:$offset_3:$length}
-        if [ "$modemid_1" = "$is_unicorn" ] && [ "$modemid_2" -gt "$dsp_lpa_enabled" -o "$modemid_3"
-               = "S" ]; then
+        if [ "$modemid_1" = "$is_unicorn" ] && [ "$modemid_2" -gt "$dsp_lpa_enabled" ]; then
            setprop lpa.decode true
            setprop audio.decoder_override_check true
            setprop use.non-omx.mp3.decoder true
-           setprop use.non-omx.aac.decoder true
         else
            setprop lpa.decode false
         fi
@@ -74,7 +70,6 @@ case $soc_id in
            setprop lpa.decode true
            setprop audio.decoder_override_check true
            setprop use.non-omx.mp3.decoder true
-           setprop use.non-omx.aac.decoder true
         else
            setprop lpa.decode false
         fi
@@ -83,14 +78,13 @@ esac
 
 # set default composition for MSM8625
 case $soc_id in
-     127 | 128 | 129 | 137 | 167 | 168 | 169 | 170)
+     127 | 128 | 129 | 137)
         comp_8x25=`getprop debug.composition.8x25.type`
         setprop debug.composition.type $comp_8x25
         setprop ro.hw_plat 8x25
         setprop lpa.decode true
         setprop audio.decoder_override_check true
         setprop use.non-omx.mp3.decoder true
-        setprop use.non-omx.aac.decoder true
         setprop ro.qc.sdk.audio.fluencetype fluence
     ;;
 esac

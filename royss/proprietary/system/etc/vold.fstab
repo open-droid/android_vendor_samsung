@@ -40,10 +40,8 @@
 ######################
 #storage_struct = series, "/mnt/sdcard/extStorages"
 #storage_struct = parallel
-
 {
 	supported_exfat = yes
-        android_secure_containers = enable
 }
 dev_mount sdcard /storage/extSdCard auto /devices/platform/msm_sdcc.1/mmc_host/mmc1/
 

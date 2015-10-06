@@ -225,26 +225,6 @@ case "$target" in
         ;;
 esac
 
-# Enable Power modes and set the CPU Freq Sampling rates
-case "$target" in
-     "msm7627a")
-        start qosmgrd
-	echo 0 > /sys/module/pm2/modes/cpu0/standalone_power_collapse/idle_enabled
-	echo 0 > /sys/module/pm2/modes/cpu1/standalone_power_collapse/idle_enabled
-	echo 0 > /sys/module/pm2/modes/cpu2/standalone_power_collapse/idle_enabled
-	echo 0 > /sys/module/pm2/modes/cpu3/standalone_power_collapse/idle_enabled
-	echo 1 > /sys/module/pm2/modes/cpu0/standalone_power_collapse/suspend_enabled
-	echo 1 > /sys/module/pm2/modes/cpu1/standalone_power_collapse/suspend_enabled
-	echo 1 > /sys/module/pm2/modes/cpu2/standalone_power_collapse/suspend_enabled
-	echo 1 > /sys/module/pm2/modes/cpu3/standalone_power_collapse/suspend_enabled
-	#SuspendPC:
-	echo 1 > /sys/module/pm2/modes/cpu0/power_collapse/suspend_enabled
-	#IdlePC:
-	echo 1 > /sys/module/pm2/modes/cpu0/power_collapse/idle_enabled
-	echo 25000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
-    ;;
-esac
-
 # Post-setup services
 case "$target" in
     "msm8660" | "msm8960")
@@ -254,22 +234,31 @@ case "$target" in
         soc_id=`cat /sys/devices/system/soc/soc0/id`
         ver=`cat /sys/devices/system/soc/soc0/version`
         case "$soc_id" in
-            "127" | "128" | "129" | "137" | "167" )
+            "127" | "128" | "129" | "137" | "167" | "168" | "169" | "170" )
                 start mpdecision
                 if [ "$ver" = "2.0" ]; then
                         start thermald
                 fi
         ;;
         esac
-        case "$soc_id" in
-            "168" | "169" | "170" )
-                start mpdecision
-                start thermald
-	;;
-	esac
     ;;
 esac
 
+# Enable Power modes and set the CPU Freq Sampling rates
+case "$target" in
+     "msm7627a")
+        start qosmgrd
+	echo 1 > /sys/module/pm2/modes/cpu0/standalone_power_collapse/idle_enabled
+	echo 1 > /sys/module/pm2/modes/cpu1/standalone_power_collapse/idle_enabled
+	echo 1 > /sys/module/pm2/modes/cpu0/standalone_power_collapse/suspend_enabled
+	echo 1 > /sys/module/pm2/modes/cpu1/standalone_power_collapse/suspend_enabled
+	#SuspendPC:
+	echo 1 > /sys/module/pm2/modes/cpu0/power_collapse/suspend_enabled
+	#IdlePC:
+	echo 1 > /sys/module/pm2/modes/cpu0/power_collapse/idle_enabled
+	echo 25000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+    ;;
+esac
 
 # Change adj level and min_free_kbytes setting for lowmemory killer to kick in
 case "$target" in
